@@ -30,6 +30,8 @@ def read_sequence(reader, stop):
     token = reader.next()
     token = reader.peek()
     while token != stop:
+        if not token:
+            raise Exception('EOF')
         lst.append(read_form(reader))
         token = reader.peek()
     reader.next()

@@ -1,4 +1,5 @@
 import sys
+import traceback
 import Reader
 import Printer
 
@@ -19,11 +20,16 @@ def rep(arg):
     
 def main():
     while True:
-        print('user> ', end='')
-        line = input()
-        if line:
-            rep(line)
-        else:
-            sys.exit(0)
+        try:
+            print('user> ', end='')
+            line = input()
+            if line:
+                rep(line)
+            else:
+                sys.exit(0)
+        except Exception as e:
+            print(e)
+
+
 if __name__ == "__main__":
     main()
