@@ -51,18 +51,25 @@ def read_atom(reader):
 
 def read_form(reader):
     token = reader.peek()
-    special = {'\'', '`', '~', '~@', '^', '@'}
-    right_paren = {')',']','}'}
-    left_paren = {'(','[','{'}
-    if token in special:
-        reader.next()
-        return read_form(reader)
-    elif token in right_paren:
-        raise Exception('unexpected')
-    elif token in left_paren:
-        return read_list(reader) 
+    if token:
+        special = {'\\', '`', '~', '~@', '^', '@'}
+        right_paren = {')',']','}'}
+        left_paren = {'(','[','{'}
+        if token in special:
+            reader.next()
+            return read_form(reader)
+        elif token in right_paren:
+            raise Exception('unbalanced')
+        elif token in left_paren:
+            return read_list(reader)
+        elif token[0] == '"':
+            if token[-1] != '"' or len(token) == 1:
+                raise Exception('unbalanced')
+            return read_atom(reader)
+        else:
+            return read_atom(reader)
     else:
-        return read_atom(reader)
+        raise Exception('EOF')
 
 def read_str(str):
     tokens = tokenize(str)
