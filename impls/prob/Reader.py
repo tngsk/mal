@@ -47,66 +47,62 @@ def read_atom(reader):
     if re.match(int_type, token):
         return int(token)
     elif re.match(str_type, token):
+        #token = token[1:-1]#.replace(r"/\\(.)/g", lambda x:x)
         return str(token)
     elif token[0] == '"':
         raise Exception('EOF')
     elif token[0] == ':':
-        pass
+        token = "\u029e" + token[1:]
+        return token
     elif token == 'nil':
-        return None
+        return 'nil'
     elif token == 'true':
-        return True
+        return 'true'
     elif token == 'false':
-        return False
+        return 'false'
     else:
         return str(token)
 
 def read_form(reader):
     token = reader.peek()
-    if token:
-        special = {'`', '~', '~@', '^', '@'}
-        right_paren = {')',']','}'}
-        left_paren = {'(','[','{'}
+    if token == '\'':
+        reader.next()
+        return list(['quote', read_form(reader)])
+    elif token == '`':
+        reader.next()
+        return list(['quasiquote', read_form(reader)])
+    elif token == '~':
+        reader.next()
+        return list(['unquote', read_form(reader)])
+    elif token == '~@':
+        reader.next()
+        return list(['splice-unquote', read_form(reader)])
+    elif token == '^':
+        reader.next()
+        return list(['with-meta', read_form(reader)])
+    elif token == '@':
+        reader.next()
+        return list(['deref', read_form(reader)])
 
-        if token == '\'':
-            reader.next()
-            return list(['quote', read_form(reader)])
-        elif token == '`':
-            reader.next()
-            return list(['quasiquote', read_form(reader)])
-        elif token == '~':
-            reader.next()
-            return list(['unquote', read_form(reader)])
-        elif token == '~@':
-            reader.next()
-            return list(['splice-unquote', read_form(reader)])
-        elif token == '^':
-            reader.next()
-            return list(['with-meta', read_form(reader)])
-        elif token == '@':
-            reader.next()
-            return list(['deref', read_form(reader)])
+    # list
+    elif token == ')': raise Exception('unexpected ")"')
+    elif token == '(':
+        return read_list(reader)
 
-        # list
-        elif token == ')': raise Exception('unexpected ")"')
-        elif token == '(':
-            return read_list(reader)
+    # vector
+    elif token == ']': raise Exception('unexpected "]"')
+    elif token == '[':
+        return read_list(reader)
 
-        # vector
-        elif token == ']': raise Exception('unexpected "]"')
-        elif token == '[':
-            return read_list(reader)
+    # hash-map
+    elif token == '{': raise Exception('unexpected "}"')
+    elif token == '}':
+        return read_list(reader)
 
-        # hash-map
-        elif token == '{': raise Exception('unexpected "}"')
-        elif token == '}':
-            return read_list(reader)
-
-        # atom
-        else:
-            return read_atom(reader)
+    # atom
     else:
-        raise Exception('EOF')
+        return read_atom(reader)
+
 
 def read_str(str):
     tokens = tokenize(str)
