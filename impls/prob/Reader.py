@@ -41,6 +41,12 @@ def read_sequence(reader, stop):
 def read_list(reader):
     return read_sequence(reader, ')')
 
+def read_vector(reader):
+    return read_sequence(reader, ']')
+
+def read_hash_map(reader):
+    return read_sequence(reader, '}')
+
 def read_atom(reader):
     token = reader.next()
     int_type = re.compile(r"-?[0-9]+$")
@@ -85,8 +91,9 @@ def read_form(reader):
         return Mal.Data(Mal.Type.LIST, list([symbol, read_form(reader)]))
     elif token == '^':
         reader.next()
+        meta = read_form(reader)
         symbol = Mal.Data(Mal.Type.SYMBOL,'with-meta')
-        return Mal.Data(Mal.Type.LIST, list([symbol, read_form(reader)]))
+        return Mal.Data(Mal.Type.LIST, list([symbol, read_form(reader), meta]))
     elif token == '@':
         reader.next()
         symbol = Mal.Data(Mal.Type.SYMBOL,'deref')
@@ -100,12 +107,12 @@ def read_form(reader):
     # vector
     elif token == ']': raise Exception('unexpected "]"')
     elif token == '[':
-        return Mal.Data(Mal.Type.LIST, read_list(reader))
+        return Mal.Data(Mal.Type.VECTOR, read_vector(reader))
 
     # hash-map
-    elif token == '{': raise Exception('unexpected "}"')
-    elif token == '}':
-        return Mal.Data(Mal.Type.LIST, read_list(reader))
+    elif token == '}': raise Exception('unexpected "}"')
+    elif token == '{':
+        return Mal.Data(Mal.Type.HASH_MAP, read_hash_map(reader))
 
     # atom
     else:

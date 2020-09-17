@@ -21,5 +21,21 @@ def pr_str(obj, print_readably=True):
         s = f'({s})'
         return str(s)
 
+    elif obj.type == Mal.Type.VECTOR:
+        lst = []
+        for n in obj.data:
+            lst.append(pr_str(n))
+        s = ' '.join(lst)
+        s = f'[{s}]'
+        return str(s)  
+
+    elif obj.type == Mal.Type.HASH_MAP:
+        lst = []
+        for n in obj.data:
+            lst.append(pr_str(n))
+        s = ' '.join(lst)
+        s = '{' + s + '}'
+        return str(s)  
+
     else:
         return str(obj.data)
