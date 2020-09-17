@@ -1,21 +1,25 @@
+import Mal
 
 def pr_str(obj, print_readably=True):
-    if type(obj) == str:
+    
+    if obj.type == Mal.Type.STR:
 
-        # keyword
-        if obj[0] == "\u029e":
-            obj = ":" + obj[1:]
+        # # keyword
+        # if obj.type == Mal.Type.KEYWORD:
+        #     obj.data = ":" + obj.data[1:]
 
-        return str(obj)
-    elif type(obj) == int:
-        return str(obj)
-    elif type(obj) == list:
+        return str(obj.data)
+    
+    elif obj.type == Mal.Type.NUMBER:
+        return str(obj.data)
+
+    elif obj.type == Mal.Type.LIST:
         lst = []
-        for n in obj:
+        for n in obj.data:
             lst.append(pr_str(n))
         s = ' '.join(lst)
         s = f'({s})'
         return str(s)
-    else:
-        return str(obj)
 
+    else:
+        return str(obj.data)
