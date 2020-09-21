@@ -69,7 +69,7 @@ def read_atom(reader):
     elif token == 'false':
         return Mal.Type.FALSE, 'false'
     else:
-        return Mal.Type.STR, token
+        return Mal.Type.SYMBOL, token
 
 def read_form(reader):
     token = reader.peek()
