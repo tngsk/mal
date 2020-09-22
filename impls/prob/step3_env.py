@@ -66,7 +66,7 @@ def eval_ast(ast, env):
         try:
             return env.get(ast.data)
         except:
-            raise Exception("no value is found")
+            raise Exception(f"{ast.data} not found")
     elif ast.type == Mal.Type.LIST:
         newlist = list(map(lambda x: EVAL(x, env), ast.data))
         return Mal.Data(Mal.Type.LIST, newlist)

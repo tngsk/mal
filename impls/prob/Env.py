@@ -13,7 +13,7 @@ class Env():
         if key in self.data:
             return self
         elif self.outer:
-            return outer.find(key)
+            return self.outer.find(key)
         else:
             return None
 
@@ -22,7 +22,7 @@ class Env():
         if env:
             return env.data.get(key)
         else:
-            raise Exception(f"{key} not found")
+            raise Exception(f" {key} not found")
 
 
 
