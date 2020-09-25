@@ -35,7 +35,10 @@ def pr_str(obj, print_readably=True):
             lst.append(pr_str(n))
         s = ' '.join(lst)
         s = '{' + s + '}'
-        return str(s)  
+        return str(s)
+
+    elif obj.type ==  Mal.Type.FUNCTION:
+        return str('#<function>')
 
     else:
         return str(obj.data)

@@ -1,9 +1,18 @@
 
+import Mal
 
 class Env():
-    def __init__(self, outer=None):
+    def __init__(self, outer=None, binds=None, exprs=None):
         self.data = {}
         self.outer = outer
+
+        if binds:
+            for i in range(len(binds.data)):
+                if binds.data[i] == '&':
+                    self.data[binds.data[i+1].data] = exprs[i:]
+                    break
+                else:
+                    self.data[binds.data[i].data] = exprs[i]
 
     def set(self, key, value):
         self.data[key] = value;
