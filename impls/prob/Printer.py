@@ -2,43 +2,41 @@ import Mal
 
 def pr_str(obj, print_readably=True):
     
-    if obj.type == Mal.Type.STR:
-
-        # # keyword
-        # if obj.type == Mal.Type.KEYWORD:
-        #     obj.data = ":" + obj.data[1:]
-
-        return str(obj.data)
+    if type(obj) is str:
+        return obj
     
-    elif obj.type == Mal.Type.NUMBER:
-        return str(obj.data)
+    elif type(obj) is int:
+        return str(obj)
 
-    elif obj.type == Mal.Type.LIST:
+    elif type(obj) is float:
+        return str(obj)
+
+    elif type(obj) is list:
         lst = []
-        for n in obj.data:
+        for n in obj:
             lst.append(pr_str(n))
         s = ' '.join(lst)
         s = f'({s})'
         return str(s)
 
-    elif obj.type == Mal.Type.VECTOR:
+    elif type(obj) is Mal.Vector:
         lst = []
-        for n in obj.data:
+        for n in obj:
             lst.append(pr_str(n))
         s = ' '.join(lst)
         s = f'[{s}]'
-        return str(s)  
+        return s  
 
-    elif obj.type == Mal.Type.HASH_MAP:
+    elif type(obj) is Mal.HashMap:
         lst = []
-        for n in obj.data:
+        for n in obj:
             lst.append(pr_str(n))
         s = ' '.join(lst)
         s = '{' + s + '}'
-        return str(s)
+        return s
 
-    elif obj.type ==  Mal.Type.FUNCTION:
-        return str('#<function>')
+    elif type(obj) is Mal.Func:
+        return '#<function>'
 
     else:
-        return str(obj.data)
+        return obj

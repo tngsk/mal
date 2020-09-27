@@ -1,25 +1,23 @@
 import sys
-import traceback
-
 import Reader
 import Printer
 
-def prob_read(arg):
+def READ(arg):
     return Reader.read_str(arg)
 
-def prob_print(arg):
+def PRINT(arg):
     return Printer.pr_str(arg)
 
-def prob_eval(arg):
+def EVAL(arg):
     return arg
 
 def rep(arg):
-    p_read = prob_read(arg)
-    p_eval = prob_eval(p_read)
-    p_print = prob_print(p_eval)
-    print(p_print)
+    r = READ(arg)
+    e = EVAL(r)
+    p = PRINT(e)
+    print(p)
     
-def main():
+def LOOP():
     while True:
         try:
             print('user> ', end='')
@@ -33,4 +31,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    LOOP()

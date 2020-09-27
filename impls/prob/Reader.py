@@ -49,75 +49,79 @@ def read_hash_map(reader):
 
 def read_atom(reader):
     token = reader.next()
-    int_type = re.compile(r"-?[0-9]+$")
-    str_type = re.compile(r'"(?:[\\].|[^\\"])*"')
-    if re.match(int_type, token):
-        return Mal.Type.NUMBER, token
-    elif re.match(str_type, token):
-        #token = token[1:-1]#.replace(r"/\\(.)/g", lambda x:x)
-        return Mal.Type.STR, token
+    int_regex = re.compile(r"-?[0-9]+$")
+    str_regex = re.compile(r'"(?:[\\].|[^\\"])*"')
+    if re.match(int_regex, token):
+        return token
+    elif re.match(str_regex, token):
+        return str(token)
     elif token[0] == '"':
         raise Exception('EOF')
     elif token[0] == ':':
         # token = "\u029e" + token[1:]
         # token = token[1:]
-        return Mal.Type.KEYWORD, token
+        return Mal.Keyword(token)
     elif token == 'nil':
-        return Mal.Type.NIL, 'nil'
+        return Mal.Nil()
     elif token == 'true':
-        return Mal.Type.TRUE, 'true'
-    elif token == 'false':
-        return Mal.Type.FALSE, 'false'
-    else:
-        return Mal.Type.SYMBOL, token
+        return Mal.Tru()
 
+    elif token == 'false':
+        return Mal.Fal()
+    else:
+        return Mal.Symbol(token)
+    
 def read_form(reader):
     token = reader.peek()
     if token == '\'':
         reader.next()
-        symbol = Mal.Data(Mal.Type.SYMBOL,'quote')
-        return Mal.Data(Mal.Type.LIST, list([symbol, read_form(reader)]))
+        symbol = Mal.Symbol('quate')
+        return list([symbol, read_form(reader)])
+
     elif token == '`':
         reader.next()
-        symbol = Mal.Data(Mal.Type.SYMBOL,'quasiquote')
-        return Mal.Data(Mal.Type.LIST, list([symbol, read_form(reader)]))
+        symbol = Mal.Symbol('quasiquote')
+        return list([symbol, read_form(reader)])
+
     elif token == '~':
         reader.next()
-        symbol = Mal.Data(Mal.Type.SYMBOL,'unquote')
-        return Mal.Data(Mal.Type.LIST, list([symbol, read_form(reader)]))
+        symbol = Mal.Symbol('unquote')
+        return list([symbol, read_form(reader)])
+
     elif token == '~@':
         reader.next()
-        symbol = Mal.Data(Mal.Type.SYMBOL,'splice-unquote')
-        return Mal.Data(Mal.Type.LIST, list([symbol, read_form(reader)]))
+        symbol = Mal.Symbol('splice-unquote')
+        return list([symbol, read_form(reader)])
+
     elif token == '^':
         reader.next()
         meta = read_form(reader)
-        symbol = Mal.Data(Mal.Type.SYMBOL,'with-meta')
-        return Mal.Data(Mal.Type.LIST, list([symbol, read_form(reader), meta]))
+        symbol = Mal.Symbol('with-meta')
+        return list([symbol, read_form(reader), meta])
+
     elif token == '@':
         reader.next()
-        symbol = Mal.Data(Mal.Type.SYMBOL,'deref')
-        return Mal.Data(Mal.Type.LIST, list([symbol, read_form(reader)]))
+        symbol = Mal.Symbol('deref')
+        return list([symbol, read_form(reader)])
 
     # list
     elif token == ')': raise Exception('unexpected ")"')
     elif token == '(':
-        return Mal.Data(Mal.Type.LIST, read_list(reader))
+        return read_list(reader)
 
     # vector
     elif token == ']': raise Exception('unexpected "]"')
     elif token == '[':
-        return Mal.Data(Mal.Type.VECTOR, read_vector(reader))
+        return read_vector(reader)
 
     # hash-map
     elif token == '}': raise Exception('unexpected "}"')
     elif token == '{':
-        return Mal.Data(Mal.Type.HASH_MAP, read_hash_map(reader))
+        return read_hash_map(reader)
 
     # atom
     else:
-        type, data = read_atom(reader)
-        return Mal.Data(type, data)
+        return read_atom(reader)
 
 
 def read_str(str):

@@ -1,21 +1,21 @@
 import sys
 
-def prob_read(arg):
+def READ(arg):
     return arg
 
-def prob_print(arg):
+def PRINT(arg):
     return arg
 
-def prob_eval(arg):
+def EVAL(arg):
     return arg
 
 def rep(arg):
-    p_read = prob_read(arg)
-    p_eval = prob_eval(p_read)
-    p_print = prob_print(p_eval)
-    print(p_print)
+    r = READ(arg)
+    e = EVAL(r)
+    p = PRINT(e)
+    print(p)
     
-def main():
+def LOOP():
     while True:
         print('user> ', end='')
         line = input()
@@ -23,5 +23,6 @@ def main():
             rep(line)
         else:
             sys.exit(0)
+
 if __name__ == "__main__":
-    main()
+    LOOP()
