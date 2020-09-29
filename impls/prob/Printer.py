@@ -38,5 +38,14 @@ def pr_str(obj, print_readably=True):
     elif type(obj) is Mal.Func:
         return '#<function>'
 
+    elif type(obj) is Mal.Nil:
+        return 'nil'
+
+    elif type(obj) is Mal.Tru:
+        return 'true'
+
+    elif type(obj) is Mal.Fal:
+        return 'false'
+
     else:
         return obj

@@ -75,7 +75,7 @@ def read_form(reader):
     token = reader.peek()
     if token == '\'':
         reader.next()
-        symbol = Mal.Symbol('quate')
+        symbol = Mal.Symbol('quote')
         return list([symbol, read_form(reader)])
 
     elif token == '`':
@@ -112,12 +112,14 @@ def read_form(reader):
     # vector
     elif token == ']': raise Exception('unexpected "]"')
     elif token == '[':
-        return read_vector(reader)
+        vector = read_vector(reader)
+        return Mal.Vector(vector)
 
     # hash-map
     elif token == '}': raise Exception('unexpected "}"')
     elif token == '{':
-        return read_hash_map(reader)
+        hashmap = read_hash_map(reader)
+        return Mal.HashMap(hashmap)
 
     # atom
     else:
