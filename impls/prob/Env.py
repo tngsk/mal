@@ -31,7 +31,7 @@ class Env():
         if env:
             return env.data.get(key)
         else:
-            raise Exception(f" {key} not found")
+            raise Exception(f"{key} not found")
 
 
 
