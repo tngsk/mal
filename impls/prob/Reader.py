@@ -52,7 +52,7 @@ def read_atom(reader):
     int_regex = re.compile(r"-?[0-9]+$")
     str_regex = re.compile(r'"(?:[\\].|[^\\"])*"')
     if re.match(int_regex, token):
-        return token
+        return Mal.Number(token)
     elif re.match(str_regex, token):
         return str(token)
     elif token[0] == '"':

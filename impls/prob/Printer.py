@@ -5,7 +5,7 @@ def pr_str(obj, print_readably=True):
     if type(obj) is str:
         return obj
     
-    elif type(obj) is int:
+    elif type(obj) is Mal.Number:
         return str(obj)
 
     elif type(obj) is float:

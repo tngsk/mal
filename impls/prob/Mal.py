@@ -1,3 +1,5 @@
+
+class Number(int): pass
 class Symbol(str): pass
 class Keyword(str): pass 
 class Atom(str): pass
