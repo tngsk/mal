@@ -1,5 +1,5 @@
 import re
-import Mal
+from Mal import *
 
 class Reader():
     def __init__(self, tokens, position=0):
@@ -52,7 +52,7 @@ def read_atom(reader):
     int_regex = re.compile(r"-?[0-9]+$")
     str_regex = re.compile(r'"(?:[\\].|[^\\"])*"')
     if re.match(int_regex, token):
-        return Mal.Number(token)
+        return Number(token)
     elif re.match(str_regex, token):
         return str(token)
     elif token[0] == '"':
@@ -60,48 +60,48 @@ def read_atom(reader):
     elif token[0] == ':':
         # token = "\u029e" + token[1:]
         # token = token[1:]
-        return Mal.Keyword(token)
+        return Keyword(token)
     elif token == 'nil':
-        return Mal.Nil()
+        return Nil()
     elif token == 'true':
-        return Mal.Tru()
+        return Tru()
 
     elif token == 'false':
-        return Mal.Fal()
+        return Fal()
     else:
-        return Mal.Symbol(token)
+        return Symbol(token)
     
 def read_form(reader):
     token = reader.peek()
     if token == '\'':
         reader.next()
-        symbol = Mal.Symbol('quote')
+        symbol = Symbol('quote')
         return list([symbol, read_form(reader)])
 
     elif token == '`':
         reader.next()
-        symbol = Mal.Symbol('quasiquote')
+        symbol = Symbol('quasiquote')
         return list([symbol, read_form(reader)])
 
     elif token == '~':
         reader.next()
-        symbol = Mal.Symbol('unquote')
+        symbol = Symbol('unquote')
         return list([symbol, read_form(reader)])
 
     elif token == '~@':
         reader.next()
-        symbol = Mal.Symbol('splice-unquote')
+        symbol = Symbol('splice-unquote')
         return list([symbol, read_form(reader)])
 
     elif token == '^':
         reader.next()
         meta = read_form(reader)
-        symbol = Mal.Symbol('with-meta')
+        symbol = Symbol('with-meta')
         return list([symbol, read_form(reader), meta])
 
     elif token == '@':
         reader.next()
-        symbol = Mal.Symbol('deref')
+        symbol = Symbol('deref')
         return list([symbol, read_form(reader)])
 
     # list
@@ -113,13 +113,13 @@ def read_form(reader):
     elif token == ']': raise Exception('unexpected "]"')
     elif token == '[':
         vector = read_vector(reader)
-        return Mal.Vector(vector)
+        return Vector(vector)
 
     # hash-map
     elif token == '}': raise Exception('unexpected "}"')
     elif token == '{':
         hashmap = read_hash_map(reader)
-        return Mal.HashMap(hashmap)
+        return HashMap(hashmap)
 
     # atom
     else:

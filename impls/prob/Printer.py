@@ -1,11 +1,14 @@
-import Mal
+from Mal import *
 
 def pr_str(obj, print_readably=True):
     
     if type(obj) is str:
         return obj
     
-    elif type(obj) is Mal.Number:
+    elif type(obj) is Number:
+        return str(obj)
+
+    elif type(obj) is int:
         return str(obj)
 
     elif type(obj) is float:
@@ -19,7 +22,7 @@ def pr_str(obj, print_readably=True):
         s = f'({s})'
         return str(s)
 
-    elif type(obj) is Mal.Vector:
+    elif type(obj) is Vector:
         lst = []
         for n in obj:
             lst.append(pr_str(n))
@@ -27,7 +30,7 @@ def pr_str(obj, print_readably=True):
         s = f'[{s}]'
         return s  
 
-    elif type(obj) is Mal.HashMap:
+    elif type(obj) is HashMap:
         lst = []
         for n in obj:
             lst.append(pr_str(n))
@@ -35,16 +38,16 @@ def pr_str(obj, print_readably=True):
         s = '{' + s + '}'
         return s
 
-    elif type(obj) is Mal.Fn:
+    elif type(obj) is Fn:
         return '#<function>'
 
-    elif type(obj) is Mal.Nil:
+    elif type(obj) is Nil:
         return 'nil'
 
-    elif type(obj) is Mal.Tru:
+    elif type(obj) is Tru:
         return 'true'
 
-    elif type(obj) is Mal.Fal:
+    elif type(obj) is Fal:
         return 'false'
 
     else:

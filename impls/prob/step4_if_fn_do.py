@@ -1,10 +1,10 @@
 import sys
 import Reader
 import Printer
-import Mal
-import Env
+from Mal import *
+from Env import Env
 
-repl_env = Env.Env()
+repl_env = Env()
 repl_env.set('+', lambda a,b: a + b)
 repl_env.set('-', lambda a,b: a - b)
 repl_env.set('*', lambda a,b: a * b)
@@ -25,35 +25,44 @@ def EVAL(ast, env):
 
     if type(ast) is list:
 
-        a0, a1, a2, a3, _ = ast
+        first = ast[0]
 
-        if a0 == 'def!':
+        if first == 'def!':
+            a1 = ast[1]
+            a2 = ast[2]
             value = EVAL(a2, env)
             env.set(a1, value)
             return value
 
-        elif a0 == 'let*':
-            let_env = Env.Env(env)
+        elif first == 'let*':
+            let_env = Env(env)
+            a1 = ast[1]
+            a2 = ast[2]
             for i in range(0, len(a1), 2):
                 let_env.set(a1[i] , EVAL(a1[i+1], let_env))
             return EVAL(a2, let_env)
         
-        elif a0 == 'do':
+        elif first == 'do':
             return eval_ast(ast[1:], env)
         
-        elif a0 == 'if':
-            if1 = EVAL(a1, env)
-            if not (type(if1) is Mal.Nil or type(if1) is Mal.Fal):
+        elif first == 'if':
+            a1 = ast[1]
+            a2 = ast[2]
+            a3 = ast[3]
+            param1 = EVAL(a1, env)
+            if not (type(param1) is Nil or type(param1) is Fal):
                 return EVAL(a2, env)
             else:
-                if3 = EVAL(a3, env)
-                return if3 if if3 else Mal.Nil()
+                param3 = EVAL(a3, env)
+                return param3 if param3 else Nil()
         
-        elif a0 == 'fn*':
+        elif first == 'fn*':
+            a1 = ast[1]
+            a2 = ast[2]
             def fn(*args):
-                fn_env = Env.Env(env, a1, args)
+                fn_env = Env(env, a1, args)
                 return EVAL(a2, fn_env)
-            return Mal.Fn(fn)
+            return Fn(fn)
 
         else:
             fn = eval_ast(ast, env)
@@ -66,7 +75,7 @@ def eval_function(el):
     fn = el[0]
     args = []
     for arg in el[1:]:
-        if type(arg) is Mal.Number:
+        if type(arg) is Number:
             args.append(int(arg))
         else:
             args.append(arg)
@@ -74,7 +83,7 @@ def eval_function(el):
 
 def eval_ast(ast, env):
     
-    if type(ast) is Mal.Symbol:
+    if type(ast) is Symbol:
         try:
             return env.get(ast)
         except:
@@ -84,16 +93,16 @@ def eval_ast(ast, env):
         lst = list(map(lambda x: EVAL(x, env), ast))
         return lst
 
-    elif type(ast) is Mal.Vector:
+    elif type(ast) is Vector:
         lst = list(map(lambda x: EVAL(x, env), ast))
-        return Mal.Vector(lst)
+        return Vector(lst)
 
-    elif type(ast) is Mal.HashMap:
+    elif type(ast) is HashMap:
         lst = []
         for i in range(0, len(ast), 2):
             lst.append(ast[i])
             lst.append(EVAL(ast[i+1], env))
-        return Mal.HashMap(lst)
+        return HashMap(lst)
     else:
         return ast
 
