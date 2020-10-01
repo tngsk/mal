@@ -24,8 +24,8 @@ class Fal(int):
     def __str__(self) -> str:
         return 'false'
 
-class Func(object):
-    def __init__(self, fn) -> None:
+class Fn(object):
+    def __init__(self,fn) -> None:
         self.fn = fn
-    def call(self):
-        return self.fn()
+    def __call__(self, *args, **kwds) -> None:
+        return self.fn(*args)

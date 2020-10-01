@@ -35,7 +35,7 @@ def pr_str(obj, print_readably=True):
         s = '{' + s + '}'
         return s
 
-    elif type(obj) is Mal.Func:
+    elif type(obj) is Mal.Fn:
         return '#<function>'
 
     elif type(obj) is Mal.Nil:

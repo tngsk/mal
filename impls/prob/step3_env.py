@@ -61,6 +61,7 @@ def eval_ast(ast, env):
     
     if type(ast) is Mal.Symbol:
         try:
+            
             return env.get(ast)
         except:
             raise Exception(f"{ast} not found")

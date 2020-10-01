@@ -1,15 +1,8 @@
 import sys
-import traceback
-
 import Reader
 import Printer
 import Mal
 import Env
-
-# repl_env = {'+': lambda a,b: a + b,
-#             '-': lambda a,b: a - b,
-#             '*': lambda a,b: a * b,
-#             '/': lambda a,b: int(a/b)}
 
 repl_env = Env.Env()
 repl_env.set('+', lambda a,b: a + b)
@@ -24,84 +17,83 @@ def PRINT(arg):
     return Printer.pr_str(arg)
 
 def EVAL(ast, env):
-    if not ast.type == Mal.Type.LIST:
+    if not type(ast) is list:
         return eval_ast(ast, env)
 
-    elif len(ast.data) == 0:
+    if len(ast) == 0:
         return ast
 
-    elif ast.type == Mal.Type.LIST:
+    if type(ast) is list:
 
-        first_symbol = ast.data[0].data
+        a0, a1, a2, a3, _ = ast
 
-        if first_symbol == 'def!':
-            key = ast.data[1].data
-            value = EVAL(ast.data[2], env)
-            env.set(key, value)
+        if a0 == 'def!':
+            value = EVAL(a2, env)
+            env.set(a1, value)
             return value
 
-        elif first_symbol == 'let*':
+        elif a0 == 'let*':
             let_env = Env.Env(env)
-            e1 = ast.data[1].data
-            e2 = ast.data[2]
-            for i in range(0, len(e1), 2):
-                let_env.set(e1[i].data , EVAL(e1[i+1], let_env))
-            return EVAL(e2, let_env)
-
-        elif first_symbol == 'do':
+            for i in range(0, len(a1), 2):
+                let_env.set(a1[i] , EVAL(a1[i+1], let_env))
+            return EVAL(a2, let_env)
+        
+        elif a0 == 'do':
             return eval_ast(ast[1:], env)
         
-        elif first_symbol == 'if':
-            e1 = EVAL(ast[1], env)
-            if not (e1.type == Mal.Type.NIL or e1.type == Mal.Type.FALSE):
-                e2 = EVAL(ast[2], env)
-                return e2
+        elif a0 == 'if':
+            if1 = EVAL(a1, env)
+            if not (type(if1) is Mal.Nil or type(if1) is Mal.Fal):
+                return EVAL(a2, env)
             else:
-                e3 = EVAL(ast[3], env)
-                return e3 if e3 else Mal.Data(Mal.Type.NIL, 'nil')
-            
-        elif first_symbol == 'fn*':
-            def fn(arg):
-                fn_env = Env.Env(env, ast.data[1], ast.data)
-                return EVAL(ast.data[2], fn_env)
-            return fn
+                if3 = EVAL(a3, env)
+                return if3 if if3 else Mal.Nil()
+        
+        elif a0 == 'fn*':
+            def fn(*args):
+                fn_env = Env.Env(env, a1, args)
+                return EVAL(a2, fn_env)
+            return Mal.Fn(fn)
 
         else:
-            el = eval_ast(ast, env)
-            evaluted = eval_function(el)
-            return Mal.Data(Mal.Type.STR, evaluted)
+            fn = eval_ast(ast, env)
+            return eval_function(fn)
 
     else:
         raise Exception("EVAL: Type Error")
  
 def eval_function(el):
-    func = el.data[0]
+    fn = el[0]
     args = []
-    for arg in el.data[1:]:
-        if arg.type == Mal.Type.NUMBER:
-            args.append(int(arg.data))
+    for arg in el[1:]:
+        if type(arg) is Mal.Number:
+            args.append(int(arg))
         else:
-            args.append(arg.data)
-    return func(*args)
+            args.append(arg)
+    return fn(*args)
 
 def eval_ast(ast, env):
-    if ast.type == Mal.Type.SYMBOL:
+    
+    if type(ast) is Mal.Symbol:
         try:
-            return env.get(ast.data)
+            return env.get(ast)
         except:
-            raise Exception(f"{ast.data} not found")
-    elif ast.type == Mal.Type.LIST:
-        newlist = list(map(lambda x: EVAL(x, env), ast.data))
-        return Mal.Data(Mal.Type.LIST, newlist)
-    elif ast.type == Mal.Type.VECTOR:
-        newlist = list(map(lambda x: EVAL(x, env), ast.data))
-        return Mal.Data(Mal.Type.VECTOR, newlist)
-    elif ast.type == Mal.Type.HASH_MAP:
-        newmap = []
-        for i in range(0, len(ast.data), 2):
-            newmap.append(ast.data[i])
-            newmap.append(EVAL(ast.data[i+1], env))
-        return Mal.Data(Mal.Type.HASH_MAP, newmap)
+            raise Exception(f" {ast} not found")
+
+    elif type(ast) is list:
+        lst = list(map(lambda x: EVAL(x, env), ast))
+        return lst
+
+    elif type(ast) is Mal.Vector:
+        lst = list(map(lambda x: EVAL(x, env), ast))
+        return Mal.Vector(lst)
+
+    elif type(ast) is Mal.HashMap:
+        lst = []
+        for i in range(0, len(ast), 2):
+            lst.append(ast[i])
+            lst.append(EVAL(ast[i+1], env))
+        return Mal.HashMap(lst)
     else:
         return ast
 
