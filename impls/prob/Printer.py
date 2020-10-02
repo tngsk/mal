@@ -1,4 +1,4 @@
-from Mal import *
+from mal import *
 
 def pr_str(obj, print_readably=True):
     

@@ -1,5 +1,5 @@
 import re
-from Mal import *
+from mal import *
 
 class Reader():
     def __init__(self, tokens, position=0):

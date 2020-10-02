@@ -1,19 +1,19 @@
 import sys
-import Reader
-import Printer
-from Mal import *
-from Env import Env
-import Core
+import reader
+import printer
+from mal import *
+from env import Env
+import core
 
 repl_env = Env()
-for key,value in Core.ns.items():
+for key,value in core.ns.items():
     repl_env.set(key, value)
 
 def READ(arg):
-    return Reader.read_str(arg)
+    return reader.read_str(arg)
 
 def PRINT(arg):
-    return Printer.pr_str(arg)
+    return printer.pr_str(arg)
 
 def EVAL(ast, env):
     if not type(ast) is list:

@@ -1,4 +1,4 @@
-from Mal import *
+from mal import *
 
 ns = {
     '+': lambda a,b: a + b,

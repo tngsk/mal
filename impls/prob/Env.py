@@ -1,5 +1,5 @@
 
-import Mal
+import mal
 
 class Env():
     def __init__(self, outer=None, binds=None, exprs=None):
