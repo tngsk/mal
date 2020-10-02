@@ -3,12 +3,11 @@ import Reader
 import Printer
 from Mal import *
 from Env import Env
+import Core
 
 repl_env = Env()
-repl_env.set('+', lambda a,b: a + b)
-repl_env.set('-', lambda a,b: a - b)
-repl_env.set('*', lambda a,b: a * b)
-repl_env.set('/', lambda a,b: int(a/b))
+for key,value in Core.ns.items():
+    repl_env.set(key, value)
 
 def READ(arg):
     return Reader.read_str(arg)
