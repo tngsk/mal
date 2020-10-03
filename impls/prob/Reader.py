@@ -51,23 +51,30 @@ def read_atom(reader):
     token = reader.next()
     int_regex = re.compile(r"-?[0-9]+$")
     str_regex = re.compile(r'"(?:[\\].|[^\\"])*"')
+
     if re.match(int_regex, token):
         return Number(token)
+        
     elif re.match(str_regex, token):
         return str(token)
+
     elif token[0] == '"':
         raise Exception('EOF')
+
     elif token[0] == ':':
         # token = "\u029e" + token[1:]
         # token = token[1:]
         return Keyword(token)
+
     elif token == 'nil':
         return Nil()
+
     elif token == 'true':
         return Tru()
 
     elif token == 'false':
         return Fal()
+
     else:
         return Symbol(token)
     

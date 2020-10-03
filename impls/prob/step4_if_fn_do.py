@@ -23,44 +23,35 @@ def EVAL(ast, env):
         return ast
 
     if type(ast) is list:
-
         first = ast[0]
 
         if first == 'def!':
-            a1 = ast[1]
-            a2 = ast[2]
-            value = EVAL(a2, env)
-            env.set(a1, value)
+            value = EVAL(ast[2], env)
+            env.set(ast[1], value)
             return value
 
         elif first == 'let*':
             let_env = Env(env)
-            a1 = ast[1]
-            a2 = ast[2]
-            for i in range(0, len(a1), 2):
-                let_env.set(a1[i] , EVAL(a1[i+1], let_env))
-            return EVAL(a2, let_env)
+            for i in range(0, len(ast[1]), 2):
+                let_env.set(ast[1][i] , EVAL(ast[1][i+1], let_env))
+            return EVAL(ast[2], let_env)
         
         elif first == 'do':
-            return eval_ast(ast[1:], env)
+            elem = eval_ast(ast[1:], env)
+            return elem[len(elem) - 1]
         
         elif first == 'if':
-            a1 = ast[1]
-            a2 = ast[2]
-            a3 = ast[3]
-            param1 = EVAL(a1, env)
-            if not (type(param1) is Nil or type(param1) is Fal):
-                return EVAL(a2, env)
+            e1 = EVAL(ast[1], env)
+            if (type(e1) is Nil) or (type(e1) is Fal):
+                e3 = EVAL(ast[3], env)
+                return e3 if e3 else Nil()
             else:
-                param3 = EVAL(a3, env)
-                return param3 if param3 else Nil()
-        
+                return EVAL(ast[2], env)
+            
         elif first == 'fn*':
-            a1 = ast[1]
-            a2 = ast[2]
             def fn(*args):
-                fn_env = Env(env, a1, args)
-                return EVAL(a2, fn_env)
+                fn_env = Env(env, ast[1], args)
+                return EVAL(ast[2], fn_env)
             return Fn(fn)
 
         else:
@@ -110,7 +101,10 @@ def rep(arg):
     e = EVAL(r, repl_env)
     p = PRINT(e)
     print(p)
-    
+
+
+rep('(def! not (fn* (a) (if a false true)))')
+
 def LOOP():
     while True:
         try:

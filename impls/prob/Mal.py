@@ -7,19 +7,19 @@ class Vector(list): pass
 class HashMap(list): pass
 
 class Nil(int):
-    def __bool__():
+    def __bool__(self):
         return False
     def __str__(self) -> str:
         return 'nil'
 
 class Tru(int):
-    def __bool__():
+    def __bool__(self):
         return True
     def __str__(self) -> str:
         return 'true'
 
 class Fal(int):
-    def __bool__():
+    def __bool__(self):
         return False
     def __str__(self) -> str:
         return 'false'
