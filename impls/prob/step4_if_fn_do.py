@@ -41,10 +41,12 @@ def EVAL(ast, env):
             return elem[len(elem) - 1]
         
         elif first == 'if':
-            e1 = EVAL(ast[1], env)
-            if (type(e1) is Nil) or (type(e1) is Fal):
-                e3 = EVAL(ast[3], env)
-                return e3 if e3 else Nil()
+            cond = type(EVAL(ast[1], env))
+            if (cond is Nil) or (cond is Fal):
+                if len(ast) > 3:
+                    return EVAL(ast[3], env)
+                else:
+                    return Nil()
             else:
                 return EVAL(ast[2], env)
             
