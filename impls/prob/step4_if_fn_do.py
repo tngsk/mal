@@ -110,8 +110,8 @@ rep('(def! not (fn* (a) (if a false true)))')
 def LOOP():
     while True:
         try:
-            print('user> ', end='')
-            line = input()
+            # print('user> ', end='')
+            line = input('user> ')
             if line:
                 rep(line)
             else:

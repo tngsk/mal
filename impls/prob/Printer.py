@@ -1,8 +1,13 @@
+import re
 from mal import *
 
 def pr_str(obj, print_readably=True):
     
     if type(obj) is str:
+        if print_readably:
+            obj = re.sub('"','\"',obj)
+            #obj = f'"{obj}"'
+        
         return obj
     
     elif type(obj) is Number:

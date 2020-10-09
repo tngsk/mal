@@ -5,11 +5,20 @@ def prn(*arg):
     print(printer.pr_str(arg[0], True))
     return Nil()
 
+def _str(*arg):
+    return "".join(list(map(lambda x: printer.pr_str(x,False), arg)))
+
+def pr_str(*arg):
+    return " ".join(list(map(lambda x: printer.pr_str(x,True), arg)))
+
+def _println(*arg):
+    return " ".join(list(map(lambda x: printer.pr_str(x,False), arg)))
+
 def makelist(*arg):
     return list(arg)
 
 def isList(*arg):
-    if type(arg[0]) is list:
+    if (type(arg[0]) is list) or (type(arg[0]) is tuple):
         return Tru()
     else:
         return Fal()
@@ -36,6 +45,7 @@ def eq(*arg):
         return Fal()
 
 ns = {
+
     '+': lambda a,b: a + b,
     '-': lambda a,b: a - b,
     '*': lambda a,b: a * b,
@@ -50,7 +60,9 @@ ns = {
     'list': makelist,
     'list?': isList,
     'empty?': isEmpty,
-    'count': count
+    'count': count,
+    'pr-str': pr_str,
+    'str': _str,
+    'println': _println,
+
 }
-
-
